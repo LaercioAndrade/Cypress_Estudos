@@ -25,16 +25,48 @@ describe('Ongs', () => {
     });
 
     it('deve poder realizar login no sistema', () => {
-    
-    const createOngId = Cypress.env('createdOngId');
-    
-    cy.log(createOngId);
-
-    cy.visit('http://localhost:3000/');
-    cy.get('input').type(createOngId)
-    cy.get('.button').click();
-
+        cy.visit('http://localhost:3000/');
+        cy.get('input').type(Cypress.env('createdOngId'));
+        cy.get('.button').click();
     });
+
+    it('deve poder fazer logout', () => {
+        cy.login();
+        cy.get('button').click();
+    });
+
+    it('devem poder cadastrar novos casos', () => {
+        cy.login();
+        cy.get('.button').click();
+        cy.get('[placeholder="Título do caso"]').type('Animal abandonado');
+        cy.get('textarea').type('Animal precisa de apoio ara aonde morar');
+        cy.get('[placeholder="Valor em reais"]').type(200);
+
+        // POST 200 / incidents
+        cy.route('POST', '**/incidents').as('newIncident');
+        cy.get('.button').click();
+        cy.wait('@newIncident').then((xhr) => {
+            expect(xhr.status).to.eq(200);
+            expect(xhr.response.body).has.property('id');
+            expect(xhr.response.body.id).is.not.null;
+        })
+    });
+
+    it('devem poder excluir um caso', () => {
+        cy.createNewIncident();
+        cy.login();
+        
+        // DELETE 204 Request URL: http://localhost:3333/incidents/38
+        cy.route('DELETE', '**/incidents/*' ).as('deleteIncident')
+
+        cy.get('li > button > svg').click();
+
+        cy.wait('@deleteIncident').then((xhr) => {
+            expect(xhr.status).to.eq(204);
+            expect(xhr.response.body).to.be.empty;
+        })
+    })
 
 });
 
+///dc8c60fd

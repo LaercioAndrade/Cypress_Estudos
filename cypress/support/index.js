@@ -19,8 +19,9 @@ import './commands'
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-before(() => {
+
+beforeEach(() => {
     // cy.server - pra router e request
     cy.server();
     cy.createOng();
-});
+})
