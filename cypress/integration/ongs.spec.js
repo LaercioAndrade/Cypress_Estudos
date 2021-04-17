@@ -26,25 +26,25 @@ describe('Ongs', () => {
 
     it('deve poder realizar login no sistema', () => {
         cy.visit('http://localhost:3000/');
-        cy.get('input').type(Cypress.env('createdOngId'));
-        cy.get('.button').click();
+        cy.get('[data-cy=id]').type(Cypress.env('createdOngId'));
+        cy.get('[data-cy=button-login]').click();
     });
 
     it('deve poder fazer logout', () => {
         cy.login();
-        cy.get('button').click();
+        cy.get('[data-cy=button-logout]').click();
     });
 
     it('devem poder cadastrar novos casos', () => {
         cy.login();
-        cy.get('.button').click();
-        cy.get('[placeholder="Título do caso"]').type('Animal abandonado');
-        cy.get('textarea').type('Animal precisa de apoio ara aonde morar');
-        cy.get('[placeholder="Valor em reais"]').type(200);
+        cy.get('[data-cy=button-new-incident]').click();
+        cy.get('[data-cy=title]').type('Animal abandonado');
+        cy.get('[data-cy=description]').type('Animal precisa de apoio ara aonde morar');
+        cy.get('[data-cy=value]').type(200);
 
         // POST 200 / incidents
         cy.route('POST', '**/incidents').as('newIncident');
-        cy.get('.button').click();
+        cy.get('[data-cy=button-save]').click();
         cy.wait('@newIncident').then((xhr) => {
             expect(xhr.status).to.eq(200);
             expect(xhr.response.body).has.property('id');
@@ -59,7 +59,7 @@ describe('Ongs', () => {
         // DELETE 204 Request URL: http://localhost:3333/incidents/38
         cy.route('DELETE', '**/incidents/*' ).as('deleteIncident')
 
-        cy.get('li > button > svg').click();
+        cy.get('[data-cy=button-delete]').click();
 
         cy.wait('@deleteIncident').then((xhr) => {
             expect(xhr.status).to.eq(204);
