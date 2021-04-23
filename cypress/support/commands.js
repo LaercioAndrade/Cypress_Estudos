@@ -27,7 +27,7 @@
 Cypress.Commands.add('createOng', () =>{
     cy.request({
         method: 'POST',
-       url: 'http://localhost:3333/ongs' ,
+        url: 'http://localhost:3333/ongs' ,
         body: {
             city: "São Paulo",
             email: "test@hotmail.com",
